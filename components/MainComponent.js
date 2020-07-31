@@ -1,21 +1,45 @@
 import React from 'react'
 import Menu from './MenuComponent'
-import {DISHES} from '../shared/dishes'
 import Dishdetail from './DishdetailComponent'
-import {View} from 'react-native'
+import {View,Platform} from 'react-native'
+import { createStackNavigator} from '@react-navigation/stack'
+import {NavigationContainer} from '@react-navigation/native'
 
+// const MenuNavigator = createStackNavigator({
+//     Menu:{screen:Menu},
+//     Dishdetail:{screen:Dishdetail}
+// },{
+//     initalRouteName:'Menu',
+//     navigationOptions:{
+//         headerStyle:{
+//             backgroundColor:"#512DA8"
+//         },
+//         headerTintColor:'#fff',
+//         headerTitleStyle:{
+//             color:"#fff"
+//         }
+//     }
+// })
+const Stack = createStackNavigator()
 export default function Main(){
-    const dishes = DISHES
-    const [selectedDish,setSelectedDish] = React.useState(null)
-
-    function onDishSelect(dishId){
-        setSelectedDish(dishId);
-    }
+   
     return(
-        <View>
-        <Menu dishes={dishes} 
-            onPress={(dishId)=>onDishSelect(dishId)}/>
-        <Dishdetail dish={dishes.filter((dish)=>dish.id === selectedDish)[0]}/>
+        <View style={{flex:1,paddingTop: Platform.OS === 'ios'?0:Expo.Constants.statusBarHeight}}>
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{
+                headerStyle:{
+                        backgroundColor:"#512DA8"
+                    },
+                    headerTintColor:'#fff',
+                    headerTitleStyle:{
+                        color:"#fff"
+                    }
+            }} 
+                initialRouteName="Menu">
+                <Stack.Screen name="Menu" component = {Menu} />
+                <Stack.Screen name="Dishdetail" component = {Dishdetail} />
+            </Stack.Navigator>
+        </NavigationContainer>
         </View>
     )
 }

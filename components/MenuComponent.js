@@ -1,8 +1,12 @@
 import React from 'react'
 import {FlatList} from 'react-native'
 import {ListItem} from 'react-native-elements'
+import { DISHES } from '../shared/dishes'
 
 function Menu(props){
+
+    const dishes = DISHES;
+    const {navigation} = props;
 
     const renderMenuItem = ({item,index}) => {
         return(
@@ -11,7 +15,7 @@ function Menu(props){
                 title={item.name}
                 subtitle={item.description}
                 hideChevron={true}
-                onPress={()=>props.onPress(item.id)}
+                onPress={()=>navigation.navigate('Dishdetail',{DishId:item.id})}
                 leftAvatar={{source:require('./images/uthappizza.png')}}
                 />
         )
@@ -19,7 +23,7 @@ function Menu(props){
 
     return(
         <FlatList
-            data = {props.dishes}
+            data = {dishes}
             renderItem = {renderMenuItem}
             keyExtractor={item=> item.id.toString()} //expects a string
             />
