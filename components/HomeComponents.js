@@ -4,7 +4,6 @@ import { Card } from 'react-native-elements';
 import {DISHES} from '../shared/dishes'
 import {PROMOTIONS} from '../shared/promotions'
 import {LEADERS} from '../shared/leaders'
-import { State } from 'react-native-gesture-handler';
 
 function RenderItem(props)
 {
