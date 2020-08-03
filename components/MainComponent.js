@@ -4,6 +4,7 @@ import Dishdetail from './DishdetailComponent'
 import Home from './HomeComponents'
 import Contact from './ContactComponent'
 import About from './AboutComponent'
+import Reservation from './ReservationComponent'
 import {View,Platform,Image,StyleSheet,Text} from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
@@ -102,6 +103,29 @@ function ContactUsNavigator(){
         </Stack.Navigator>
     )}
 
+    
+function ResevationNavigator(){
+    return(
+        <Stack.Navigator screenOptions={{
+            headerStyle:{
+                    backgroundColor:"#512DA8"
+                },
+                headerTintColor:'#fff',
+                headerTitleStyle:{
+                    color:"#fff"
+                }
+        }} 
+            >
+            <Stack.Screen options={({navigation})=>({
+                headerLeft:()=>(<Icon name="menu" size={24}
+                color='white'
+                onPress ={() => navigation.toggleDrawer()}
+                />)
+                })}
+                name="Reservation" component = {Reservation}/>
+        </Stack.Navigator>
+    )}
+
     const styles = StyleSheet.create({
         container: {
           flex: 1,
@@ -186,6 +210,14 @@ function Main(props){
                             color={tintColor}
                             />
                     )}}  name="Contact Us" component={ContactUsNavigator}/>
+                    <Drawer.Screen options={{drawerLabel:"Reserve Table   ",title:"Reserve Table",drawerIcon:({tintColor})=>(
+                            <Icon
+                                name="cutlery"
+                                type="font-awesome"
+                                size={24}
+                                color={tintColor}
+                                />
+                        )}}  name="Reserve Table" component={ResevationNavigator}/>
             </Drawer.Navigator>
         </NavigationContainer>
         </View>

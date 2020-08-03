@@ -59,7 +59,6 @@ function RenderComments(props){
 function Dishdetail(props){
     const {route} = props
     const dishId = route.params.DishId;
-    console.log("A:",props)
     function markFavorite(dishId) {
         props.postFavorite(dishId)
     }
