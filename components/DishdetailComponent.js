@@ -4,6 +4,7 @@ import {Card,Icon} from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { baseUrl } from '../shared/baseUrl'
+import { postFavorite } from '../redux/ActionCreators'
 
 function RenderDish(props){
     const dish = props.dish;
@@ -58,15 +59,14 @@ function RenderComments(props){
 function Dishdetail(props){
     const {route} = props
     const dishId = route.params.DishId;
-    const [favorites,setFavorites] = React.useState([]);
-
+    console.log("A:",props)
     function markFavorite(dishId) {
-        setFavorites(favorites.concat(dishId))
+        props.postFavorite(dishId)
     }
     return(
     <ScrollView>
         <RenderDish dish = {props.dishes.dishes[+dishId]}
-                    favorite = {favorites.some(el=> el===dishId)}
+                    favorite = {props.favorites.some(el=> el===dishId)}
                     onPress = {()=>markFavorite(dishId)}/>
         <RenderComments comments = {props.comments.comments.filter((comment)=>comment.dishId === dishId)}/>
     </ScrollView>
@@ -76,7 +76,12 @@ function Dishdetail(props){
 const mapStateToProps = state =>{
     return {
         dishes: state.dishes,
-        comments: state.comments
+        comments: state.comments,
+        favorites:state.favorites
     }
 }
-export default connect(mapStateToProps)(Dishdetail);
+
+const mapDisptachToProps = dispatch => ({
+    postFavorite:(dishId) => dispatch(postFavorite(dishId))
+})
+export default connect(mapStateToProps,mapDisptachToProps)(Dishdetail);
