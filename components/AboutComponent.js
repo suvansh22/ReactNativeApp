@@ -3,6 +3,7 @@ import {Card,ListItem} from 'react-native-elements'
 import {Text,ScrollView,FlatList} from 'react-native'
 import { connect } from 'react-redux'
 import { baseUrl } from '../shared/baseUrl'
+import { Loading } from './LoadingComponent'
  
 function OurHistory(){
     return(
@@ -31,7 +32,6 @@ function RenderLeader(props){
                 />
         )
     }
-
     return(
         <Card
             title="Corporate Leadership"
@@ -45,12 +45,34 @@ function RenderLeader(props){
     )
 }
 function About(props){
-    return(
-        <ScrollView>
-        <OurHistory/>
-        <RenderLeader leaders={props.leaders.leaders}/>
-        </ScrollView>
-    )
+    if(props.leaders.isLoading){
+        return(
+            <ScrollView>
+                <OurHistory />
+                <Card title="Corporate Leadership">
+                    <Loading/>
+                </Card>
+            </ScrollView>
+        )
+    }
+    else if(props.leaders.errMess){
+        return(
+            <ScrollView>
+                <OurHistory />
+                <Card title="Corporate Leadership">
+                    <Text>{props.leaders.erMess}</Text>
+                </Card>
+            </ScrollView>
+        )
+    }
+    else{
+        return(
+            <ScrollView>
+            <OurHistory/>
+            <RenderLeader leaders={props.leaders.leaders}/>
+            </ScrollView>
+        )
+    }
 }
 
 const mapStateToProps = state => {
