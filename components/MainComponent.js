@@ -9,6 +9,8 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator,DrawerContentScrollView,DrawerItemList} from '@react-navigation/drawer'
 import { Icon } from 'react-native-elements'
+import {fetchComments,fetchDishes,fetchLeaders,fetchPromos} from '../redux/ActionCreators'
+import { connect } from 'react-redux'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -138,7 +140,15 @@ function ContactUsNavigator(){
             <DrawerItemList {...props}/>
         </DrawerContentScrollView>
     )
-export default function Main(){
+function Main(props){
+
+    React.useEffect(()=>{
+        props.fetchDishes();
+        props.fetchComments();
+        props.fetchPromos();
+        props.fetchLeaders();
+      // eslint-disable-next-line
+      },[])
    
     return(
         <View style={{flex:1,paddingTop: Platform.OS === 'ios'?0:Expo.Constants.statusBarHeight}}>
@@ -181,3 +191,21 @@ export default function Main(){
         </View>
     )
 }
+
+const mapDispatchToProps = dispatch =>({
+    fetchDishes: () =>dispatch(fetchDishes()),
+    fetchComments: () =>dispatch(fetchComments()),
+    fetchLeaders: () =>dispatch(fetchLeaders()),
+    fetchPromos: () =>dispatch(fetchPromos())
+})
+ 
+const mapStateToProps=state=>{
+    return {
+        dishes:state.dishes,
+        comments:state.comments,
+        promotions:state.promotions,
+        leaders:state.leaders
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Main);

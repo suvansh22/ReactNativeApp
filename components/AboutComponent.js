@@ -1,8 +1,9 @@
 import React from 'react'
 import {Card,ListItem} from 'react-native-elements'
-import {Text,View,ScrollView,FlatList,SafeAreaView} from 'react-native'
-import {LEADERS} from '../shared/leaders'
-
+import {Text,ScrollView,FlatList} from 'react-native'
+import { connect } from 'react-redux'
+import { baseUrl } from '../shared/baseUrl'
+ 
 function OurHistory(){
     return(
         <Card
@@ -18,8 +19,7 @@ function OurHistory(){
     )
 }
 
-function RenderLeader(){
-    const leaders = LEADERS
+function RenderLeader(props){
     const renderMenuItem = ({item,index}) => {
         return(
             <ListItem
@@ -27,7 +27,7 @@ function RenderLeader(){
                 title={item.name}
                 subtitle={item.description}
                 hideChevron={true}
-                leftAvatar={{source:require('./images/alberto.png')}}
+                leftAvatar={{source:{uri:baseUrl+item.image}}}
                 />
         )
     }
@@ -37,18 +37,25 @@ function RenderLeader(){
             title="Corporate Leadership"
             >
         <FlatList
-            data = {leaders}
+            data = {props.leaders}
             renderItem = {renderMenuItem}
             keyExtractor={item=> item.id.toString()} //expects a string
             />
         </Card>
     )
 }
-export default function About(){
+function About(props){
     return(
         <ScrollView>
         <OurHistory/>
-        <RenderLeader/>
+        <RenderLeader leaders={props.leaders.leaders}/>
         </ScrollView>
     )
 }
+
+const mapStateToProps = state => {
+    return {
+        leaders: state.leaders
+    }
+}
+export default connect(mapStateToProps)(About);
