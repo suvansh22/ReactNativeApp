@@ -86,8 +86,8 @@ function Reservation(){
                 animationType={'slide'}
                 transparent={false}
                 visible={showModal}
-                onDismiss={()=>{toggleModal();reserForm()}}
-                onRequestClose={()=>{toggleModal();reserForm()}}>
+                onDismiss={()=>{toggleModal();resetForm()}}
+                onRequestClose={()=>{toggleModal();resetForm()}}>
                     <View style={styles.modal}>
                         <Text style={styles.modalTitle}>Your Reservation</Text>
                         <Text style={styles.modalText}>Number of Guests:{guests}</Text>
