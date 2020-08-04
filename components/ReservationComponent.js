@@ -1,15 +1,15 @@
 import React from 'react';
-import {Text,View,ScrollView,StyleSheet,Picker,Switch,Button,Platform} from 'react-native';
-import DatePicker from'react-native-datepicker';
+import {Text,View,ScrollView,StyleSheet,Picker,Switch,Button,Platform,Modal} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Icon } from 'react-native-elements';
 
 function Reservation(){
     const [guests,setGuests] = React.useState(1);
     const [smoking,setSmoking] = React.useState(false);
-    const [date,setDate] = React.useState(new Date);
+    const [date,setDate] = React.useState('');
     const [show,setShow] = React.useState(false);
     const [mode,setMode] = React.useState('date')
+    const [showModal,setShowModal] = React.useState(false)
 
     const changeShow = (mode) =>{
         setMode(mode)
@@ -18,15 +18,23 @@ function Reservation(){
   
     const handleReservation = () =>{
         console.log("values",guests,smoking)
-        setGuests(1)
-        setSmoking(false)
-        setDate(new Date)
+        toggleModal()
     }
 
     const changeDate = (event,selectedDate) =>{
         const currentDate = selectedDate || date; 
         setShow(Platform.OS==='ios');
         setDate(currentDate)
+    }
+
+    const toggleModal = () =>{
+        setShowModal(!showModal)
+    }
+
+    const reserForm = () =>{
+        setGuests(1)
+        setSmoking(false)
+        setDate('')
     }
 
     return(
@@ -59,12 +67,12 @@ function Reservation(){
                 <View style={{paddingRight:2,paddingLeft:2}}><Icon onPress={()=>changeShow('time')} name="clock-o" type="font-awesome"/></View>
                 <View style={{paddingLeft:2}}><Icon onPress={()=>changeShow("date")} name="date-range" type="material"/></View>
                 {show && (<DateTimePicker
-                   value={date}
+                   value={new Date}
                    mode={mode}
                    display="default"
                    testID='select date and time'
                    onChange={changeDate}/>)}
-                <Text style={{padding:5,borderWidth:1,borderStyle:"solid"}}>{date.getDate()+'-'+date.getMonth()+'-'+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes()}</Text>
+                <Text style={{padding:5,borderWidth:1,borderStyle:"solid",flex:2}}>{date===''?'':date.getDate()+'-'+date.getMonth()+'-'+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes()}</Text>
             </View>
             <View style={styles.formRow}>
                 <Button
@@ -74,6 +82,23 @@ function Reservation(){
                     accessibilityLabel='Learn more about this purple button'
                     />
             </View>
+            <Modal
+                animationType={'slide'}
+                transparent={false}
+                visible={showModal}
+                onDismiss={()=>{toggleModal();reserForm()}}
+                onRequestClose={()=>{toggleModal();reserForm()}}>
+                    <View style={styles.modal}>
+                        <Text style={styles.modalTitle}>Your Reservation</Text>
+                        <Text style={styles.modalText}>Number of Guests:{guests}</Text>
+                        <Text style={styles.modalText}>Smoking?:{smoking?'Yes':'No'}</Text>
+                        <Text style={styles.modalText}>Date and Time:{date===''?'':date.getDate()+'-'+date.getMonth()+'-'+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes()}</Text>
+                        <Button
+                            onPress={()=>{toggleModal();reserForm()}}
+                            color="#512DA8"
+                            title="Close"/>
+                    </View>
+            </Modal>
         </ScrollView>
     )
 }
@@ -92,6 +117,21 @@ const styles = StyleSheet.create({
     },
     formItem:{
         flex:1
+    },
+    modal:{
+        justifyContent:"center",
+        margin:20
+    },
+    modalTitle:{
+        fontSize:24,
+        fontWeight:'bold',
+        backgroundColor:"#512DA8",
+        textAlign:"center",
+        marginBottom:20
+    },
+    modalText:{
+        fontSize:18,
+        margin:10
     }
 })
 
