@@ -5,6 +5,7 @@ import Home from './HomeComponents'
 import Contact from './ContactComponent'
 import About from './AboutComponent'
 import Reservation from './ReservationComponent'
+import Favorites from './FavoriteComponent'
 import {View,Platform,Image,StyleSheet,Text} from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
@@ -126,6 +127,28 @@ function ResevationNavigator(){
         </Stack.Navigator>
     )}
 
+    function FavoritesNavigator(){
+        return(
+            <Stack.Navigator screenOptions={{
+                headerStyle:{
+                        backgroundColor:"#512DA8"
+                    },
+                    headerTintColor:'#fff',
+                    headerTitleStyle:{
+                        color:"#fff"
+                    }
+            }} 
+                >
+                <Stack.Screen options={({navigation})=>({
+                    headerLeft:()=>(<Icon name="menu" size={24}
+                    color='white'
+                    onPress ={() => navigation.toggleDrawer()}
+                    />)
+                    })}
+                    name="Favorites" component = {Favorites}/>
+            </Stack.Navigator>
+        )}
+
     const styles = StyleSheet.create({
         container: {
           flex: 1,
@@ -210,14 +233,22 @@ function Main(props){
                             color={tintColor}
                             />
                     )}}  name="Contact Us" component={ContactUsNavigator}/>
-                    <Drawer.Screen options={{drawerLabel:"Reserve Table   ",title:"Reserve Table",drawerIcon:({tintColor})=>(
-                            <Icon
-                                name="cutlery"
-                                type="font-awesome"
-                                size={24}
-                                color={tintColor}
-                                />
-                        )}}  name="Reserve Table" component={ResevationNavigator}/>
+                <Drawer.Screen options={{drawerLabel:"My Favorites   ",title:"My Favorites",drawerIcon:({tintColor})=>(
+                        <Icon
+                            name="heart"
+                            type="font-awesome"
+                            size={24}
+                            color={tintColor}
+                            />
+                    )}}  name="My Favorites" component={FavoritesNavigator}/>
+                <Drawer.Screen options={{drawerLabel:"Reserve Table   ",title:"Reserve Table",drawerIcon:({tintColor})=>(
+                        <Icon
+                            name="cutlery"
+                            type="font-awesome"
+                            size={24}
+                            color={tintColor}
+                            />
+                    )}}  name="Reserve Table" component={ResevationNavigator}/>
             </Drawer.Navigator>
         </NavigationContainer>
         </View>
