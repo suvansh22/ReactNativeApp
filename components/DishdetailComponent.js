@@ -40,6 +40,10 @@ function RenderDish(props){
         onStartShouldSetPanResponder:(e,gestureState) => {
             return true;
         },
+        onPanResponderGrant:()=>{
+            view.rubberBand(1000)
+            .then(endState => console.log(endState.finished?'finished':'cancelled'))
+        },
         onPanResponderEnd:(e,gestureState) =>{
             if(recogniceDrag(gestureState))
                 {Alert.alert(
@@ -61,11 +65,14 @@ function RenderDish(props){
         }
     })
 
+    const handleViewRef = ref => view = ref;
+
     if(dish != null)
     {
         return(
             <View>
             <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+                ref={handleViewRef}
                 {...panResponder.panHandlers}>
             <Card
                 featuredTitle={dish.name}
