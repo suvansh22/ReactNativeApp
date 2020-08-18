@@ -4,6 +4,7 @@ import {Text,ScrollView,FlatList} from 'react-native'
 import { connect } from 'react-redux'
 import { baseUrl } from '../shared/baseUrl'
 import { Loading } from './LoadingComponent'
+import * as Animatable from 'react-native-animatable'
  
 function OurHistory(){
     return(
@@ -58,18 +59,22 @@ function About(props){
     else if(props.leaders.errMess){
         return(
             <ScrollView>
-                <OurHistory />
-                <Card title="Corporate Leadership">
-                    <Text>{props.leaders.erMess}</Text>
-                </Card>
+                    <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+                    <OurHistory />
+                    <Card title="Corporate Leadership">
+                        <Text>{props.leaders.erMess}</Text>
+                    </Card>
+                </Animatable.View>
             </ScrollView>
         )
     }
     else{
         return(
             <ScrollView>
-            <OurHistory/>
-            <RenderLeader leaders={props.leaders.leaders}/>
+            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+                <OurHistory/>
+                <RenderLeader leaders={props.leaders.leaders}/>
+            </Animatable.View>
             </ScrollView>
         )
     }

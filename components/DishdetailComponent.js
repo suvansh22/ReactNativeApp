@@ -1,10 +1,11 @@
 import React from 'react'
-import {View,Text,FlatList,Modal, Button} from 'react-native'
+import {View,Text,FlatList,Modal, Button,Alert,PanResponder} from 'react-native'
 import {Card,Icon,Rating,Input} from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { baseUrl } from '../shared/baseUrl'
 import { postFavorite,postComment } from '../redux/ActionCreators'
+import * as Animatable from 'react-native-animatable' 
 
 function RenderDish(props){
     const dish = props.dish;
@@ -28,10 +29,44 @@ function RenderDish(props){
         toggleModal()
     }
 
+    const recogniceDrag = ({oveX,moveY,dy,dx}) =>{
+        if(dx<-200)
+        {return true;}
+        else
+        {return false;}
+    }
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder:(e,gestureState) => {
+            return true;
+        },
+        onPanResponderEnd:(e,gestureState) =>{
+            if(recogniceDrag(gestureState))
+                {Alert.alert(
+                    'Add to Favourites',
+                    'Are you sure you wish to add '+ dish.name+' to your favorites?',
+                    [
+                        {
+                            text:'Cancel',
+                            onPress:() => console.log("Cancel Pressed"),
+                            style:"cancel"
+                        },
+                        {
+                            text:"OK",
+                            onPress:() =>props.favorite?console.log("Already favorite"):props.onPress()
+                        }
+                    ],{cancelable:false}
+                )}
+            return true
+        }
+    })
+
     if(dish != null)
     {
         return(
             <View>
+            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+                {...panResponder.panHandlers}>
             <Card
                 featuredTitle={dish.name}
                 image={{uri:baseUrl+dish.image}}>
@@ -55,6 +90,7 @@ function RenderDish(props){
                 name={'pencil'}/>
             </View>
             </Card>
+            </Animatable.View>
             <Modal
                  animationType={'slide'}
                  transparent={false}
@@ -125,6 +161,7 @@ function RenderComments(props){
         )
     }
         return(
+            <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>
             <Card title="Comments">
                 <FlatList
                     data={comments}
@@ -132,6 +169,7 @@ function RenderComments(props){
                     keyExtractor={item=>item.id.toString()}
                     />
             </Card>
+            </Animatable.View>
         )
 }
 
