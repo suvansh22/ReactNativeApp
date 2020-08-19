@@ -31,7 +31,9 @@ function RenderDish(props){
 
     const recogniceDrag = ({oveX,moveY,dy,dx}) =>{
         if(dx<-200)
-        {return true;}
+        {return "add_favorite"}
+        else if(dx>200)
+        {return "add_comment"}
         else
         {return false;}
     }
@@ -45,7 +47,7 @@ function RenderDish(props){
             .then(endState => console.log(endState.finished?'finished':'cancelled'))
         },
         onPanResponderEnd:(e,gestureState) =>{
-            if(recogniceDrag(gestureState))
+            if(recogniceDrag(gestureState) == "add_comment")
                 {Alert.alert(
                     'Add to Favourites',
                     'Are you sure you wish to add '+ dish.name+' to your favorites?',
@@ -61,6 +63,10 @@ function RenderDish(props){
                         }
                     ],{cancelable:false}
                 )}
+            else if(recogniceDrag(gestureState) == "add_favorite")
+            {
+                toggleModal()
+            }
             return true
         }
     })

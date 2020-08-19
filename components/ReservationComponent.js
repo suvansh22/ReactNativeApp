@@ -1,7 +1,8 @@
 import React from 'react';
-import {Text,View,ScrollView,StyleSheet,Picker,Switch,Button,Platform,Modal} from 'react-native';
+import {Text,View,ScrollView,StyleSheet,Picker,Switch,Button,Platform,Modal,Alert} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Icon } from 'react-native-elements';
+import * as Animatable from 'react-native-animatable' 
 
 function Reservation(){
     const [guests,setGuests] = React.useState(1);
@@ -9,7 +10,7 @@ function Reservation(){
     const [date,setDate] = React.useState('');
     const [show,setShow] = React.useState(false);
     const [mode,setMode] = React.useState('date')
-    const [showModal,setShowModal] = React.useState(false)
+    // const [showModal,setShowModal] = React.useState(false)
 
     const changeShow = (mode) =>{
         setMode(mode)
@@ -17,8 +18,21 @@ function Reservation(){
     }
   
     const handleReservation = () =>{
-        console.log("values",guests,smoking)
-        toggleModal()
+        Alert.alert(
+            "Your Reservation OK?",
+            "Number of Guests: "+guests+"\n"+"Smoking?"+smoking+"\n"+"Date and Time: "+(date===""?"":date.getDate()+'-'+date.getMonth()+'-'+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes()),
+            [
+                {
+                    text:'Cancel',
+                    onPress:() => reserForm(),
+                    style:"cancel"
+                },
+                {
+                    text:"OK",
+                    onPress:() =>reserForm()
+                }
+            ],{cancelable:false}
+        )
     }
 
     const changeDate = (event,selectedDate) =>{
@@ -27,9 +41,9 @@ function Reservation(){
         setDate(currentDate)
     }
 
-    const toggleModal = () =>{
-        setShowModal(!showModal)
-    }
+    // const toggleModal = () =>{
+    //     setShowModal(!showModal)
+    // }
 
     const reserForm = () =>{
         setGuests(1)
@@ -38,6 +52,7 @@ function Reservation(){
     }
 
     return(
+        <Animatable.View animation="zoomIn" duration={2000} delay={1000}>
         <ScrollView>
             <View style={styles.formRow}>
                 <Text style={styles.formLabel}>Number of Guests</Text>
@@ -82,7 +97,7 @@ function Reservation(){
                     accessibilityLabel='Learn more about this purple button'
                     />
             </View>
-            <Modal
+            {/* <Modal
                 animationType={'slide'}
                 transparent={false}
                 visible={showModal}
@@ -98,8 +113,9 @@ function Reservation(){
                             color="#512DA8"
                             title="Close"/>
                     </View>
-            </Modal>
-        </ScrollView>
+            </Modal> */}
+            </ScrollView>
+        </Animatable.View>
     )
 }
 
