@@ -3,6 +3,8 @@ import {Text,View,ScrollView,StyleSheet,Picker,Switch,Button,Platform,Modal,Aler
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable' 
+import * as Permission from 'expo-permissions'
+import * as Notification from 'expo-notifications'
 
 function Reservation(){
     const [guests,setGuests] = React.useState(1);
@@ -29,7 +31,10 @@ function Reservation(){
                 },
                 {
                     text:"OK",
-                    onPress:() =>reserForm()
+                    onPress:() =>{
+                        presentLocalNotification(date);
+                        reserForm();
+                    }
                 }
             ],{cancelable:false}
         )
@@ -49,6 +54,29 @@ function Reservation(){
         setGuests(1)
         setSmoking(false)
         setDate('')
+    }
+
+    const obtainNotificationPermission = async()=>{
+        let permission = await Permission.getAsync(Permission.USER_FACING_NOTIFICATIONS)
+        if(permission.status !== 'granted'){
+            permission = await Permission.askAsync(Permission.USER_FACING_NOTIFICATIONS);
+            if(permission.status !== 'granted')
+            {
+                Alert.alert('Oermission not granted to show notificaitions');
+            }
+        }
+        return permission
+    }
+
+    const presentLocalNotification = async(date)=>{
+        await obtainNotificationPermission();
+        Notification.presentNotificationAsync({
+            title:"Your Reservation",
+            body:'Reservation for '+date+' requested',
+            sound:true,
+            vibrate:true,
+            color:'#512DA8'
+        })
     }
 
     return(
