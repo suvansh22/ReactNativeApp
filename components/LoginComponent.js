@@ -6,6 +6,8 @@
  import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
  import {baseUrl} from '../shared/baseUrl'
  import * as Permissions from 'expo-permissions'
+ import * as asset from 'expo-asset'
+ import * as ImageManipulator from 'expo-image-manipulator'
 
  function LoginTab(props){
     const [username,setUsername] = React.useState('')
@@ -114,9 +116,20 @@ function RegisterTab(props){
                 aspect:[4,3]
             })
             if(!capturedImage.cancelled){
-                setImageUrl(capturedImage.uri)
+                processImage(capturedImage.uri)
             }
         }
+    }
+
+    const processImage = async(imageuri) => {
+        let processedImage = await ImageManipulator.manipulateAsync(
+            imageuri,
+            [
+                {resize:{width:400}}
+            ],
+            {format:'png'}
+        )
+        setImageUrl(processedImage.uri)
     }
 
     const handleRegister = () =>{
