@@ -9,11 +9,22 @@ import Favorites from './FavoriteComponent'
 import Login from './LoginComponent'
 import {View,Platform,Image,StyleSheet,Text} from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer,getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import { createDrawerNavigator,DrawerContentScrollView,DrawerItemList} from '@react-navigation/drawer'
 import { Icon } from 'react-native-elements'
 import {fetchComments,fetchDishes,fetchLeaders,fetchPromos} from '../redux/ActionCreators'
 import { connect } from 'react-redux'
+
+function getRoutetitle(route){
+const routeName = getFocusedRouteNameFromRoute(route)??'Login';
+switch(routeName){
+    case 'Login':
+        return 'Login'
+    case 'Register':
+        return 'Register'
+}
+}
+
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -150,27 +161,28 @@ function ResevationNavigator(){
             </Stack.Navigator>
         )}
 
-        function LoginNavigator(){
-            return(
-                <Stack.Navigator screenOptions={{
-                    headerStyle:{
-                            backgroundColor:"#512DA8"
-                        },
-                        headerTintColor:'#fff',
-                        headerTitleStyle:{
-                            color:"#fff"
-                        }
-                }} 
-                    >
-                    <Stack.Screen options={({navigation})=>({
-                        headerLeft:()=>(<Icon name="menu" size={24}
-                        color='white'
-                        onPress ={() => navigation.toggleDrawer()}
-                        />)
-                        })}
-                        name="Login" component = {Login}/>
-                </Stack.Navigator>
-            )}
+    function LoginNavigator(props){
+        return(
+            <Stack.Navigator screenOptions={{
+                headerStyle:{
+                        backgroundColor:"#512DA8"
+                    },
+                    headerTintColor:'#fff',
+                    headerTitleStyle:{
+                        color:"#fff"
+                    }
+            }} 
+                >
+                <Stack.Screen options={({navigation,route})=>({
+                    headerLeft:()=>(<Icon name="menu" size={24}
+                    color='white'
+                    onPress ={() => navigation.toggleDrawer()}
+                    />),
+                    headerTitle:getRoutetitle(route)
+                    })}
+                    name="Login" component = {Login}/>
+            </Stack.Navigator>
+        )}
 
     const styles = StyleSheet.create({
         container: {
