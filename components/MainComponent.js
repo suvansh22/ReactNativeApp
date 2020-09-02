@@ -7,14 +7,15 @@ import About from './AboutComponent'
 import Reservation from './ReservationComponent'
 import Favorites from './FavoriteComponent'
 import Login from './LoginComponent'
-import {View,Platform,Image,StyleSheet,Text} from 'react-native'
+import {View,Platform,Image,StyleSheet,Text,ToastAndroid} from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { NavigationContainer,getFocusedRouteNameFromRoute } from '@react-navigation/native'
+import { NavigationContainer,getFocusedRouteNameFromRoute, useScrollToTop } from '@react-navigation/native'
 import { createDrawerNavigator,DrawerContentScrollView,DrawerItemList} from '@react-navigation/drawer'
 import { Icon } from 'react-native-elements'
 import {fetchComments,fetchDishes,fetchLeaders,fetchPromos} from '../redux/ActionCreators'
 import { connect } from 'react-redux'
-
+import NetInfo,{useNetInfo} from '@react-native-community/netinfo'
+ 
 function getRoutetitle(route){
 const routeName = getFocusedRouteNameFromRoute(route)??'Login';
 switch(routeName){
@@ -224,11 +225,39 @@ function ResevationNavigator(){
     )
 function Main(props){
 
+    const netInfo = useNetInfo()
+    const checkNet = ()=>{
+        switch(netInfo.type){
+            case 'none':
+                ToastAndroid.show('You are now offline!', ToastAndroid.LONG);
+                break;
+            case 'wifi':
+                ToastAndroid.show('You are now connected to WiFi!', ToastAndroid.LONG);
+                break;
+            case 'cellular':
+                ToastAndroid.show('You are now connected to Cellular!', ToastAndroid.LONG);
+                break;
+            case 'unknown':
+                ToastAndroid.show('You now have unknown connection!', ToastAndroid.LONG);
+                break;
+            default:
+                break;
+        }
+      }
+      React.useEffect(()=>{
+          checkNet()
+      },[useNetInfo().isConnected])
+
     React.useEffect(()=>{
         props.fetchDishes();
         props.fetchComments();
         props.fetchPromos();
         props.fetchLeaders();
+
+        NetInfo.fetch()
+        .then(state => {
+            ToastAndroid.show('Initial Network Connectivity Type: '+state.type+', effectiveType: '+(state.type==='wifi'?state.details.strength:state.details.cellularGeneration),ToastAndroid.LONG)
+        });
       // eslint-disable-next-line
       },[])
    

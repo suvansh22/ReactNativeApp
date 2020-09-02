@@ -46,7 +46,6 @@ function Home(props){
     const animatedValue=new Animated.Value(0);
 
     React.useEffect(()=>{
-        console.log("ABC")
         animate()
     })
     const animate = () =>{
