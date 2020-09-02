@@ -6,7 +6,6 @@
  import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
  import {baseUrl} from '../shared/baseUrl'
  import * as Permissions from 'expo-permissions'
- import * as asset from 'expo-asset'
  import * as ImageManipulator from 'expo-image-manipulator'
 
  function LoginTab(props){
@@ -121,6 +120,24 @@ function RegisterTab(props){
         }
     }
 
+    async function getImageFromGallery(){
+        const cameraPermission = await Permissions.askAsync(Permissions.CAMERA)
+        const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+
+        if(cameraPermission.status === 'granted' && cameraRollPermission.status === 'granted')
+        {
+            let selectedImage = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes:ImagePicker.MediaTypeOptions.All,
+                allowsEditing:true,
+                aspect:[4,3],
+                quality:1
+            })
+            if(!selectedImage.cancelled){
+                processImage(selectedImage.uri)
+            }
+        }
+    }
+
     const processImage = async(imageuri) => {
         let processedImage = await ImageManipulator.manipulateAsync(
             imageuri,
@@ -156,6 +173,9 @@ function RegisterTab(props){
                 <Button
                     title="Camera"
                     onPress={getImageFromCamera}/>
+                <Button
+                    title="Gallery"
+                    onPress={getImageFromGallery}/>
             </View>
             <Input
                 placeholder="Username"
@@ -254,6 +274,7 @@ const styles = StyleSheet.create({
     imageContainer:{
         flex:1,
         flexDirection:'row',
+        justifyContent:'space-around',
         margin:20
     },
     image:{

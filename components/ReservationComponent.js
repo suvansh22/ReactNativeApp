@@ -5,6 +5,7 @@ import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable' 
 import * as Permission from 'expo-permissions'
 import * as Notification from 'expo-notifications'
+import * as Calendar from 'expo-calendar'
 
 function Reservation(){
     const [guests,setGuests] = React.useState(1);
@@ -13,6 +14,33 @@ function Reservation(){
     const [show,setShow] = React.useState(false);
     const [mode,setMode] = React.useState('date')
     // const [showModal,setShowModal] = React.useState(false)
+
+    const addReservationToCalendar = async(date) =>{
+        const startDate = new Date(Date.parse(date))
+        const endDate = new Date(Date.parse(date)+2*60*60*1000)
+        const calendarPermission = await Permission.askAsync(Permission.CALENDAR)
+        if(calendarPermission.status === 'granted')
+        {
+            await Calendar.createCalendarAsync({
+                title:"Con Fusion Table Reservation",
+                color:"blue",
+                source:{isLocalAccount: true, name: 'Expo Calendar'},
+                name:"Confusion",
+                accessLevel:Calendar.CalendarAccessLevel.OWNER,
+                ownerAccount:'personal',
+                entityType:Calendar.EntityTypes.EVENT
+            })
+            .then(async(id)=>{
+            await Calendar.createEventAsync(id,{
+                title:"Con Fusion Table Reservation",
+                location:"121, Clear Water Bay Road, Clear Wate Bay Kowloon, Hong Kong",
+                timeZone:"Asia/Hong_Kong",
+                startDate:startDate,
+                endDate:endDate
+            })})
+        }
+
+    }
 
     const changeShow = (mode) =>{
         setMode(mode)
@@ -31,9 +59,10 @@ function Reservation(){
                 },
                 {
                     text:"OK",
-                    onPress:() =>{
+                    onPress:async () =>{
+                        await addReservationToCalendar(date)
                         presentLocalNotification(date);
-                        reserForm();
+                        resetForm();
                     }
                 }
             ],{cancelable:false}
@@ -50,7 +79,7 @@ function Reservation(){
     //     setShowModal(!showModal)
     // }
 
-    const reserForm = () =>{
+    const resetForm = () =>{
         setGuests(1)
         setSmoking(false)
         setDate('')
